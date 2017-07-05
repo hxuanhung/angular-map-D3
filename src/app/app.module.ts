@@ -39,8 +39,6 @@ import { MapService } from './services/map.service';
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
-import 'leaflet';
-
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,

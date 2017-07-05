@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { store as reduxStore } from '../store';
 import { addPlaceAction, removePlaceAction } from '../actions/maps.action';
 import { MapService } from '../services/map.service';
+import * as L from 'leaflet';
 interface MapsStore {
   data: {}
 }
