@@ -4,54 +4,51 @@ import {
 } from '@angular/core';
 
 import { AppState } from '../app.service';
-import { Title } from './title';
-import { XLargeDirective } from './x-large';
-
+import { GooglePlacesDirective } from '../google-places/google-places.directive';
+import { Store } from '@ngrx/store';
+import { store as reduxStore } from '../store';
+import { addPlaceAction } from '../actions/maps.action';
 @Component({
-  /**
-   * The selector is what angular internally uses
-   * for `document.querySelectorAll(selector)` in our index.html
-   * where, in this case, selector is the string 'home'.
-   */
-  selector: 'home',  // <home></home>
-  /**
-   * We need to tell Angular's Dependency Injection which providers are in our app.
-   */
-  providers: [
-    Title
-  ],
-  /**
-   * Our list of styles in our component. We may add more to compose many styles together.
-   */
-  styleUrls: [ './home.component.css' ],
-  /**
-   * Every Angular template is first compiled by the browser before Angular runs it's compiler.
-   */
-  templateUrl: './home.component.html'
+  selector: 'home',
+  styleUrls: ['./home.component.css'],
+  templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
   /**
    * Set our default values
    */
+
   public localState = { value: '' };
+  public address: Object;
+  public place: Object;
+  public places$;
   /**
    * TypeScript public modifiers
    */
   constructor(
     public appState: AppState,
-    public title: Title
-  ) {}
-
-  public ngOnInit() {
-    console.log('hello `Home` component');
-    /**
-     * this.title.getData().subscribe(data => this.data = data);
-     */
+    private store: Store<AppState>,
+  ) {
+    this.places$ = this.store.let(reduxStore.places.getPlaces)
+      .subscribe(data => {
+        console.log(`data`, data);
+      })
   }
 
-  public submitState(value: string) {
-    console.log('submitState', value);
-    this.appState.set('value', value);
-    this.localState.value = '';
+  public ngOnInit() {
+  }
+
+  public getAddress(place: Object) {
+    console.log(`get Address here`, place);
+    this.place = place;
+    this.address = place['formatted_address'];
+    let location = place['geometry']['location'];
+    let lat = location.lat();
+    let lng = location.lng();
+  }
+
+  public addPlace() {
+    console.log(`addPlace`, this.place);
+    this.store.dispatch(new addPlaceAction(this.place));
   }
 }
