@@ -2,7 +2,9 @@ import { Observable } from 'rxjs/Observable';
 import { PlacesActionTypes as types, LabelAction } from '../actions/maps.action';
 
 const initialState = {
-  data: {},
+  data: {
+    ROOM_1: {}
+  },
   lastAction: null,
 }
 const room = (state, action) => {
@@ -18,12 +20,14 @@ const room = (state, action) => {
 
 export function reducer(state = initialState, action) {
   let payload = action.payload;
+  let roomId;
+  let placeName;
+  let roomplaces = roomId in state.data ? { ...state.data[roomId] } : {};
+  let roomsWithplaces = { ...state.data };
   switch (action.type) {
     case types.ADD_PLACE:
-      const roomId = `ROOM_1`;
-      const placeName = payload.name;
-      const roomplaces = roomId in state.data ? { ...state.data[roomId] } : {};
-      let roomsWithplaces = { ...state.data };
+      roomId = `ROOM_1`;
+      placeName = payload.name;
       if (placeName in roomplaces) {
         return state;
       }
@@ -35,11 +39,25 @@ export function reducer(state = initialState, action) {
           ...roomsWithplaces
         }
       };
+    case types.REMOVE_PLACE:
+      roomId = `ROOM_1`;
+      placeName = payload;
+
+      delete roomplaces[placeName];
+      roomsWithplaces[roomId] = { ...roomplaces };
+      return {
+        ...state,
+        data: {
+          ...roomsWithplaces
+        }
+      };
+    default:
+      return state;
   }
 }
 
 export function getPlaces(state$) {
-  return state$.select(s => s.places);
+  return state$.select(s => s.places.data);
 };
 
 

@@ -7,7 +7,10 @@ import { AppState } from '../app.service';
 import { GooglePlacesDirective } from '../google-places/google-places.directive';
 import { Store } from '@ngrx/store';
 import { store as reduxStore } from '../store';
-import { addPlaceAction } from '../actions/maps.action';
+import { addPlaceAction, removePlaceAction } from '../actions/maps.action';
+interface MapsStore {
+  data: {}
+}
 @Component({
   selector: 'home',
   styleUrls: ['./home.component.css'],
@@ -22,6 +25,7 @@ export class HomeComponent implements OnInit {
   public address: Object;
   public place: Object;
   public places$;
+  public places;
   /**
    * TypeScript public modifiers
    */
@@ -29,10 +33,11 @@ export class HomeComponent implements OnInit {
     public appState: AppState,
     private store: Store<AppState>,
   ) {
-    this.places$ = this.store.let(reduxStore.places.getPlaces)
-      .subscribe(data => {
-        console.log(`data`, data);
-      })
+    this.places$ = this.store.let(reduxStore.places.getPlaces).subscribe(places => {
+      const roomPlaces = places[`ROOM_1`];
+      this.places = roomPlaces != null ? Object.keys(roomPlaces).map(key => roomPlaces[key]) : [] ;
+      console.log(`object`,roomPlaces, places, this.places, Object.keys(roomPlaces));
+    });
   }
 
   public ngOnInit() {
@@ -49,6 +54,11 @@ export class HomeComponent implements OnInit {
 
   public addPlace() {
     console.log(`addPlace`, this.place);
+    this.address = ``;
     this.store.dispatch(new addPlaceAction(this.place));
+  }
+  public removePlace(name: string) {
+    console.log(`removePlace`, name);
+    this.store.dispatch(new removePlaceAction(name));
   }
 }

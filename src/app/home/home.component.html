@@ -15,5 +15,13 @@
     <input type="text" [(ngModel)]="address" (setAddress)="getAddress($event)" google-places/>
     <button (click)="addPlace()">Add</button>
   </div>
-
+  <div>
+    <h4>List of places</h4>
+    <ul>
+      <li *ngFor="let place of places ">
+        {{place.name}}
+         <button md-button (click)='removePlace(place.name)'>-</button>
+      </li>
+    </ul>
+  </div>
 </div>
