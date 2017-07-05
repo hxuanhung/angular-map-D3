@@ -22,12 +22,13 @@ export function reducer(state = initialState, action) {
   let payload = action.payload;
   let roomId;
   let placeName;
-  let roomplaces = roomId in state.data ? { ...state.data[roomId] } : {};
+  let roomplaces ;
   let roomsWithplaces = { ...state.data };
   switch (action.type) {
     case types.ADD_PLACE:
       roomId = `ROOM_1`;
       placeName = payload.name;
+      roomplaces = roomId in state.data ? { ...state.data[roomId] } : {};
       if (placeName in roomplaces) {
         return state;
       }
@@ -42,6 +43,7 @@ export function reducer(state = initialState, action) {
     case types.REMOVE_PLACE:
       roomId = `ROOM_1`;
       placeName = payload;
+      roomplaces = roomId in state.data ? { ...state.data[roomId] } : {};
 
       delete roomplaces[placeName];
       roomsWithplaces[roomId] = { ...roomplaces };
