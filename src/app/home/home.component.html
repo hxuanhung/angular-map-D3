@@ -20,8 +20,10 @@
     <ul>
       <li *ngFor="let place of places ">
         {{place.name}}
-         <button md-button (click)='removePlace(place.name)'>-</button>
+        <button md-button (click)='removePlace(place.name)'>-</button>
       </li>
     </ul>
+  </div>
+  <div id="map">
   </div>
 </div>

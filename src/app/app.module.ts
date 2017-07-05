@@ -35,8 +35,11 @@ import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 import { XLargeDirective } from './home/x-large';
 import { GooglePlacesDirective } from './google-places';
+import { MapService } from './services/map.service';
 import '../styles/styles.scss';
 import '../styles/headings.css';
+
+import 'leaflet';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -87,7 +90,8 @@ type StoreType = {
    */
   providers: [
     ENV_PROVIDERS,
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    MapService
   ]
 })
 export class AppModule {
