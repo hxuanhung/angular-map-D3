@@ -61,6 +61,7 @@ export class HomeComponent implements OnInit {
     //http://plnkr.co/edit/Lqme891ee8rwDiXktY5L?p=preview
     //https://bost.ocks.org/mike/leaflet/
     //https://tools.ietf.org/html/rfc7946#section-3.1.3
+    // http://bl.ocks.org/matt-mcdaniel/47033dfacfd7553489ea D3 + Leaflet with Auto Fit to Bounds
     let svg = d3.select(map.getPanes().overlayPane).append("svg"),
       g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
