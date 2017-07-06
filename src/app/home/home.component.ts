@@ -86,10 +86,18 @@ export class HomeComponent implements OnInit {
         .data(myPoints.features)
         .enter()
         .append("image")
-        .attr('class','mark')
+        .attr('class', 'mark')
         .attr('width', 20)
         .attr('height', 20)
-        .attr("xlink:href",'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
+        .attr("xlink:href", 'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
+
+      var texts = g.selectAll(".place-label")
+        .data(myPoints.features)
+        .enter()
+        .append("text")
+        .attr("class", "place-label")
+        .attr("dy", "2.35em")
+        .text(function (d) { return d.properties.name; });
       // var circles = g.selectAll("circle")
       //   .data(myPoints.features)
       //   .enter()
@@ -109,6 +117,12 @@ export class HomeComponent implements OnInit {
           return map.latLngToLayerPoint(d.LatLng).x;
         });
         circles.attr("y", function (d) {
+          return map.latLngToLayerPoint(d.LatLng).y;
+        });
+        texts.attr("x", function (d) {
+          return map.latLngToLayerPoint(d.LatLng).x;
+        });
+        texts.attr("y", function (d) {
           return map.latLngToLayerPoint(d.LatLng).y;
         });
         svg.attr("width", bottomRight[0] - topLeft[0])
