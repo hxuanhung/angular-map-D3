@@ -10,10 +10,13 @@ import { store as reduxStore } from '../store';
 import { addPlaceAction, removePlaceAction } from '../actions/maps.action';
 import { MapService } from '../services/map.service';
 import * as L from 'leaflet';
+import {DATA as myPoints} from './data';
 declare let d3: any;
 interface MapsStore {
   data: {}
 }
+
+
 @Component({
   selector: 'home',
   styleUrls: ['./home.component.css'],
@@ -37,11 +40,7 @@ export class HomeComponent implements OnInit {
     private store: Store<AppState>,
     private mapService: MapService
   ) {
-    this.places$ = this.store.let(reduxStore.places.getPlaces).subscribe(places => {
-      const roomPlaces = places[`ROOM_1`];
-      this.places = roomPlaces != null ? Object.keys(roomPlaces).map(key => roomPlaces[key]) : [];
-      console.log(`object`, roomPlaces, places, this.places, Object.keys(roomPlaces));
-    });
+
   }
 
   public ngOnInit() {
@@ -66,76 +65,77 @@ export class HomeComponent implements OnInit {
       g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
     // d3.json("https://api.myjson.com/bins/113nlr", function (geoShape) {
-    d3.json("https://api.myjson.com/bins/7ieu7", function (error, myPoints) {
-      if (error) throw error;
+    // d3.json("https://api.myjson.com/bins/7ieu7", function (error, myPoints) {
+    //   if (error) throw error;
+    var transform = d3.geo.transform({
+      point: projectPoint
+    }),
+      path = d3.geo.path().projection(transform);
+    var bounds = path.bounds(myPoints),
+    topLeft = bounds[0],
+    bottomRight = bounds[1];
 
-      var transform = d3.geo.transform({
-        point: projectPoint
-      }),
-        path = d3.geo.path().projection(transform);
+  myPoints.features.forEach(function (d) {
+    d[`LatLng`] = new L.LatLng(d.geometry.coordinates[1],
+      d.geometry.coordinates[0]);
+  });
 
-      var bounds = path.bounds(myPoints),
-        topLeft = bounds[0],
-        bottomRight = bounds[1];
+  var circles = g.selectAll(".mark")
+    .data(myPoints.features)
+    .enter()
+    .append("image")
+    .attr('class', 'mark')
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr("xlink:href", 'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
 
-      myPoints.features.forEach(function (d) {
-        d.LatLng = new L.LatLng(d.geometry.coordinates[1],
-          d.geometry.coordinates[0]);
-      });
+  var texts = g.selectAll(".place-label")
+    .data(myPoints.features)
+    .enter()
+    .append("text")
+    .attr("class", "place-label")
+    .attr("dy", "2.35em")
+    .text(function (d) { return d.properties.name; });
+  // var circles = g.selectAll("circle")
+  //   .data(myPoints.features)
+  //   .enter()
+  //   .append("circle")
+  //   .attr("r", 10)
+  //   .style("fill", "red")
+  //   .attr("fill-opacity", 0.5);
 
-      var circles = g.selectAll(".mark")
-        .data(myPoints.features)
-        .enter()
-        .append("image")
-        .attr('class', 'mark')
-        .attr('width', 20)
-        .attr('height', 20)
-        .attr("xlink:href", 'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
+  // Use Leaflet to implement a D3 geometric transformation.
+  function projectPoint(x, y) {
+    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+    this.stream.point(point.x, point.y);
+  }
 
-      var texts = g.selectAll(".place-label")
-        .data(myPoints.features)
-        .enter()
-        .append("text")
-        .attr("class", "place-label")
-        .attr("dy", "2.35em")
-        .text(function (d) { return d.properties.name; });
-      // var circles = g.selectAll("circle")
-      //   .data(myPoints.features)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("r", 10)
-      //   .style("fill", "red")
-      //   .attr("fill-opacity", 0.5);
+  function update() {
+    circles.attr("x", function (d) {
+      return map.latLngToLayerPoint(d.LatLng).x;
+    });
+    circles.attr("y", function (d) {
+      return map.latLngToLayerPoint(d.LatLng).y;
+    });
+    texts.attr("x", function (d) {
+      return map.latLngToLayerPoint(d.LatLng).x;
+    });
+    texts.attr("y", function (d) {
+      return map.latLngToLayerPoint(d.LatLng).y;
+    });
+    svg.attr("width", bottomRight[0] - topLeft[0])
+      .attr("height", bottomRight[1] - topLeft[1])
+      .style("left", topLeft[0] + "px")
+      .style("top", topLeft[1] + "px");
 
-      // Use Leaflet to implement a D3 geometric transformation.
-      function projectPoint(x, y) {
-        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-        this.stream.point(point.x, point.y);
-      }
+    g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+  }
 
-      function update() {
-        circles.attr("x", function (d) {
-          return map.latLngToLayerPoint(d.LatLng).x;
-        });
-        circles.attr("y", function (d) {
-          return map.latLngToLayerPoint(d.LatLng).y;
-        });
-        texts.attr("x", function (d) {
-          return map.latLngToLayerPoint(d.LatLng).x;
-        });
-        texts.attr("y", function (d) {
-          return map.latLngToLayerPoint(d.LatLng).y;
-        });
-        svg.attr("width", bottomRight[0] - topLeft[0])
-          .attr("height", bottomRight[1] - topLeft[1])
-          .style("left", topLeft[0] + "px")
-          .style("top", topLeft[1] + "px");
+  map.on("viewreset", update);
+  update();
 
-        g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-      }
 
-      map.on("viewreset", update);
-      update();
+
 
       // var LeafIcon = L.Icon.extend({
       //   options: {
@@ -151,11 +151,35 @@ export class HomeComponent implements OnInit {
       //   L.marker([d.geometry.coordinates[1], d.geometry.coordinates[0]], { icon: fIcon }).bindPopup(`${d.properties.name}`).addTo(map);
       // });
 
-    })
+    // })
+    this.places$ = this.store.let(reduxStore.places.getPlaces).subscribe(places => {
+      const roomPlaces = places[`ROOM_1`];
+      this.places = roomPlaces != null ? Object.keys(roomPlaces).map(key => roomPlaces[key]) : [];
+      console.log(`object`, roomPlaces, places, this.places, Object.keys(roomPlaces));
+      // console.log(this.convertDataToGeoJSONFormat(this.places));
+
+
+    });
   }
 
-  public addCitiesPins(map) {
-
+  public convertDataToGeoJSONFormat(data) {
+    let newData = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    data.forEach(place => {
+      newData.features.push({
+        type: 'Feature',
+        properties: {
+          ...place
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [place.geometry.location.lat(), place.geometry.location.lng()]
+        }
+      });
+    });
+    return newData;
   }
 
   public getAddress(place: Object) {
