@@ -82,13 +82,21 @@ export class HomeComponent implements OnInit {
           d.geometry.coordinates[0]);
       });
 
-      var circles = g.selectAll("circle")
+      var circles = g.selectAll(".mark")
         .data(myPoints.features)
         .enter()
-        .append("circle")
-        .attr("r", 10)
-        .style("fill", "red")
-        .attr("fill-opacity", 0.5);
+        .append("image")
+        .attr('class','mark')
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr("xlink:href",'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
+      // var circles = g.selectAll("circle")
+      //   .data(myPoints.features)
+      //   .enter()
+      //   .append("circle")
+      //   .attr("r", 10)
+      //   .style("fill", "red")
+      //   .attr("fill-opacity", 0.5);
 
       // Use Leaflet to implement a D3 geometric transformation.
       function projectPoint(x, y) {
@@ -97,10 +105,10 @@ export class HomeComponent implements OnInit {
       }
 
       function update() {
-        circles.attr("cx", function (d) {
+        circles.attr("x", function (d) {
           return map.latLngToLayerPoint(d.LatLng).x;
         });
-        circles.attr("cy", function (d) {
+        circles.attr("y", function (d) {
           return map.latLngToLayerPoint(d.LatLng).y;
         });
         svg.attr("width", bottomRight[0] - topLeft[0])
@@ -114,19 +122,19 @@ export class HomeComponent implements OnInit {
       map.on("viewreset", update);
       update();
 
-      var LeafIcon = L.Icon.extend({
-        options: {
-          iconSize: [13, 22],
-          iconAnchor: [6, 16],
-          popupAnchor: [-3, -76]
-        }
-      });
-      var fIcon = new LeafIcon({ iconUrl: 'puce_f.png' });
-      myPoints.features.forEach(function (d) {
-        d.LatLng = new L.LatLng(d.geometry.coordinates[1],
-          d.geometry.coordinates[0]);
-        L.marker([d.geometry.coordinates[1], d.geometry.coordinates[0]], { icon: fIcon }).bindPopup(`${d.properties.name}`).addTo(map);
-      });
+      // var LeafIcon = L.Icon.extend({
+      //   options: {
+      //     iconSize: [13, 22],
+      //     iconAnchor: [6, 16],
+      //     popupAnchor: [-3, -76]
+      //   }
+      // });
+      // var fIcon = new LeafIcon({ iconUrl: 'puce_f.png' });
+      // myPoints.features.forEach(function (d) {
+      //   d.LatLng = new L.LatLng(d.geometry.coordinates[1],
+      //     d.geometry.coordinates[0]);
+      //   L.marker([d.geometry.coordinates[1], d.geometry.coordinates[0]], { icon: fIcon }).bindPopup(`${d.properties.name}`).addTo(map);
+      // });
 
     })
   }
