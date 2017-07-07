@@ -10,7 +10,6 @@ import { store as reduxStore } from '../store';
 import { addPlaceAction, removePlaceAction } from '../actions/maps.action';
 import { MapService } from '../services/map.service';
 // import * as L from 'leaflet';
-import { DATA as myPoints } from './data';
 declare let d3: any;
 declare let L: any;
 interface MapsStore {
@@ -80,10 +79,10 @@ export class HomeComponent implements OnInit {
         .append('image')
         .attr('class', 'mark')
         .attr('x', function (d) {
-          return proj.latLngToLayerPoint(d.latLng).x;
+          return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).x;
         })
         .attr('y', function (d) {
-          return proj.latLngToLayerPoint(d.latLng).y;
+          return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).y;
         })
         .attr('width', 20)
         .attr('height', 20)
@@ -94,10 +93,10 @@ export class HomeComponent implements OnInit {
         .enter()
         .append("text")
         .attr('x', function (d) {
-          return proj.latLngToLayerPoint(d.latLng).x;
+          return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).x;
         })
         .attr('y', function (d) {
-          return proj.latLngToLayerPoint(d.latLng).y;
+          return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).y;
         })
         .attr("class", "place-label")
         .attr("dy", "2.35em")
@@ -106,43 +105,14 @@ export class HomeComponent implements OnInit {
         });
     });
 
-    cities = data.test.map(function (d) {
-      d[`latLng`] = [d.geometry.location.lat, d.geometry.location.lng];
-      return d;
-    });
-    citiesOverlay.addTo(map);
-
-
     this.places$ = this.store.let(reduxStore.places.getPlaces).subscribe(places => {
       const roomPlaces = places[`ROOM_1`];
       this.places = roomPlaces != null ? Object.keys(roomPlaces).map(key => roomPlaces[key]) : [];
-      console.log(`object`, roomPlaces, places, this.places, Object.keys(roomPlaces));
-      // console.log(this.convertDataToGeoJSONFormat(this.places));
 
-
+      cities = this.places;
+      citiesOverlay.addTo(map);
     });
   }
-
-  public convertDataToGeoJSONFormat(data) {
-    let newData = {
-      type: 'FeatureCollection',
-      features: [],
-    };
-    data.forEach(place => {
-      newData.features.push({
-        type: 'Feature',
-        properties: {
-          ...place
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [place.geometry.location.lat(), place.geometry.location.lng()]
-        }
-      });
-    });
-    return newData;
-  }
-
   public getAddress(place: Object) {
     console.log(`get Address here`, place);
     this.place = place;
