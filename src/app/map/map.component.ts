@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MapService } from '../services/map.service';
@@ -19,17 +19,20 @@ const TIMES = 5;
     height: 500px;
   }
   `],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class MapComponent implements OnInit, OnChanges, OnDestroy {
   @Input() places = [];
+  placesSbj = new Subject();
 
+  constructor(private mapService: MapService,
+    private cd: ChangeDetectorRef,
 
-  constructor(private mapService: MapService
   ) { }
 
   // tslint:disable-next-line:no-unused-variable
   ngOnChanges(changes: SimpleChanges) {
-    console.log(`onChange`, this.places);
+    this.placesSbj.next(this.places);
   }
 
   ngOnInit() {
@@ -79,13 +82,11 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
         });
     });
 
-    // this.places$ = this.store.let(reduxStore.places.getPlaces).subscribe(places => {
-    //   const roomPlaces = places[`ROOM_1`];
-    //   this.places = roomPlaces != null ? Object.keys(roomPlaces).map(key => roomPlaces[key]) : [];
-
-    //   cities = this.places;
-    //   citiesOverlay.addTo(map);
-    // });
+    this.placesSbj.subscribe(places => {
+      cities = <any>places;
+      citiesOverlay.addTo(map);
+      // this.cd.markForCheck();
+    })
   }
 
   ngOnDestroy() {
