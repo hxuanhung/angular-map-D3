@@ -67,15 +67,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
         .attr('y', function (d) {
           return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).y;
         })
-        .attr('width', function (d) {
-          console.log(`zoom calctul`, proj.map.getZoom(), 200 / 1400 * Math.pow(2, proj.map.getZoom()));
-          return 30 / proj.scale;
-        })
-        .attr('height', function (d) {
-          //TODO: recalculate size of pin
-          console.log(`zoom calcul`);
-          return 70 / proj.scale;
-        })
+        .attr('width', 30 / proj.scale)
+        .attr('height', 70 / proj.scale)
         .attr("xlink:href", 'https://a.tiles.mapbox.com/v4/marker/pin-m+4078c0.png?access_token=pk.eyJ1IjoiZ2l0aHViIiwiYSI6IjEzMDNiZjNlZGQ5Yjg3ZjBkNGZkZWQ3MTIxN2FkODIxIn0.o0lbEdOfJYEOaibweUDlzA');
 
       sel.selectAll(".place-label")
