@@ -18,6 +18,10 @@ const TIMES = 5;
     width: 100%;
     height: 500px;
   }
+  .mark {
+    margin-left: -15px,
+    margin-top: -35px
+  }
   `],
   changeDetection: ChangeDetectionStrategy.Default,
 })
@@ -37,11 +41,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     let map = L.map("map", {
-      zoomControl: false,
       center: L.latLng(46.81509864599243, 8.3221435546875),
       zoom: 8,
-      minZoom: 4,
-      maxZoom: 19,
+      // minZoom: 4,
+      // maxZoom: 19,
       layers: [this.mapService.baseMaps.OpenStreetMap]
     });
 
@@ -51,6 +54,9 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
     let cities = [];
     let citiesOverlay = L.d3SvgOverlay(function (sel, proj) {
+      console.log(`trigger zooming`, proj.scale);
+      sel.selectAll('.mark').remove();
+      sel.selectAll('.place-label').remove();
       sel.selectAll('.mark').data(cities)
         .enter()
         .append('image')
@@ -61,9 +67,16 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
         .attr('y', function (d) {
           return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).y;
         })
-        .attr('width', 20)
-        .attr('height', 20)
-        .attr("xlink:href", 'https://cdn3.iconfinder.com/data/icons/softwaredemo/PNG/24x24/DrawingPin1_Blue.png');
+        .attr('width', function (d) {
+          console.log(`zoom calctul`, proj.map.getZoom(), 200 / 1400 * Math.pow(2, proj.map.getZoom()));
+          return 30 / proj.scale;
+        })
+        .attr('height', function (d) {
+          //TODO: recalculate size of pin
+          console.log(`zoom calcul`);
+          return 70 / proj.scale;
+        })
+        .attr("xlink:href", 'https://a.tiles.mapbox.com/v4/marker/pin-m+4078c0.png?access_token=pk.eyJ1IjoiZ2l0aHViIiwiYSI6IjEzMDNiZjNlZGQ5Yjg3ZjBkNGZkZWQ3MTIxN2FkODIxIn0.o0lbEdOfJYEOaibweUDlzA');
 
       sel.selectAll(".place-label")
         .data(cities)
@@ -84,8 +97,15 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
     this.placesSbj.subscribe(places => {
       cities = <any>places;
+      console.log(`cities`, cities);
+      let bounds = [];
+      cities.forEach(city => bounds.push([city.geometry.location.lat(), city.geometry.location.lng()]))
       citiesOverlay.addTo(map);
-      // this.cd.markForCheck();
+      if (bounds.length > 0) {
+        map.fitBounds(bounds, { maxZoom: 8 });
+      } else {
+        map.setView(map.options.center, map.options.zoom);
+      };
     })
   }
 
