@@ -11,27 +11,18 @@
   <hr>
 
   <div>
-    <h4>Local State</h4>
-
-    <form (ngSubmit)="submitState(localState.value)" autocomplete="off">
-
-      <input
-        [value]="localState.value"
-        (input)="localState.value = $event.target.value"
-        placeholder="Submit Local State to App State"
-        autofocus>
-
-      <button>Submit Value</button>
-    </form>
-    <!--
-        <input type="text" [value]="localState.value" (input)="localState.value = $event.target.value" autofocus>
-        Rather than wiring up two-way data-binding ourselves with [value] and (input)
-        we can use Angular's [(ngModel)] syntax
-        <input type="text" name="textInput" [(ngModel)]="localState.value" autofocus>
-      -->
-
-    <pre>this.localState = {{ localState | json }}</pre>
-
+    <h4>Search for a place</h4>
+    <input type="text" [(ngModel)]="address" (setAddress)="getAddress($event)" google-places/>
+    <button (click)="addPlace()">Add</button>
   </div>
-
+  <div>
+    <h4>List of places</h4>
+    <ul>
+      <li *ngFor="let place of places ">
+        {{place.name}}
+        <button md-button (click)='removePlace(place.name)'>-</button>
+      </li>
+    </ul>
+  </div>
+  <map [places]="this.places"> </map>
 </div>
