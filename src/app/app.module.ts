@@ -32,9 +32,6 @@ import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
 import { MapComponent } from './map';
-import { AboutComponent } from './about';
-import { NoContentComponent } from './no-content';
-import { XLargeDirective } from './home/x-large';
 import { GooglePlacesDirective } from './google-places';
 import { MapService } from './services/map.service';
 import '../styles/styles.scss';
@@ -59,11 +56,8 @@ type StoreType = {
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    AboutComponent,
     HomeComponent,
     MapComponent,
-    NoContentComponent,
-    XLargeDirective,
     GooglePlacesDirective,
     DevtoolsComponent
   ],

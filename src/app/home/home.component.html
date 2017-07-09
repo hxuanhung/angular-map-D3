@@ -1,15 +1,4 @@
 <div>
-  <h1 x-large class="sample-content">Your Content Here</h1>
-
-  <hr>
-
-  <div>
-    For hot module reloading run
-    <pre>npm run start:hmr</pre>
-  </div>
-
-  <hr>
-
   <div>
     <h4>Search for a place</h4>
     <input type="text" [(ngModel)]="address" (setAddress)="getAddress($event)" google-places/>

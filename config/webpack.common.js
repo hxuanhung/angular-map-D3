@@ -1,15 +1,7 @@
-/**
- * @author: @AngularClass
- */
 
 const webpack = require('webpack');
 const helpers = require('./helpers');
 
-/**
- * Webpack Plugins
- *
- * problem with copy-webpack-plugin
- */
 const AssetsPlugin = require('assets-webpack-plugin');
 const NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
 const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
@@ -22,44 +14,19 @@ const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const ngcWebpack = require('ngc-webpack');
-//const PreloadWebpackPlugin = require('preload-webpack-plugin');
-
-/**
- * Webpack Constants
- */
 const HMR = helpers.hasProcessFlag('hot');
 const AOT = process.env.BUILD_AOT || helpers.hasNpmFlag('aot');
 const METADATA = {
-  title: 'Angular2 Webpack Starter by @gdi2290 from @AngularClass',
+  title: '',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer(),
   HMR: HMR
 };
 
-/**
- * Webpack configuration
- *
- * See: http://webpack.github.io/docs/configuration.html#cli
- */
 module.exports = function (options) {
   isProd = options.env === 'production';
   return {
 
-    /**
-     * Cache generated modules and chunks to improve performance for multiple incremental builds.
-     * This is enabled by default in watch mode.
-     * You can pass false to disable it.
-     *
-     * See: http://webpack.github.io/docs/configuration.html#cache
-     */
-    //cache: false,
-
-    /**
-     * The entry point for the bundle
-     * Our Angular.js app
-     *
-     * See: http://webpack.github.io/docs/configuration.html#entry
-     */
     entry: {
 
       'polyfills': './src/polyfills.browser.ts',
