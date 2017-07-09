@@ -1,19 +1,19 @@
 # Usage (given build times depend on machine):
 #
 #    Build SMALL image (no cache; ~20MB, time for build=rebuild = ~360s):
-#    docker build --squash="true" -t angular-starter .
+#    docker build --squash="true" -t angular-map-d3 .
 #
 #    Build FAST (rebuild) image (cache; >280MB, build time ~360s, rebuild time ~80s):
-#    docker build -t angular-starter .
+#    docker build -t angular-map-d3 .
 #
 #    Clean (remove intermidiet images):
 #    docker rmi -f $(docker images -f "dangling=true" -q)
 #
 #    Run image (on localhost:8080):
-#    docker run --name angular-starter -p 8080:80 angular-starter &
+#    docker run --name angular-map-d3 -p 8080:80 angular-map-d3 &
 #
 #    Run image as virtual host (read more: https://github.com/jwilder/nginx-proxy):
-#    docker run -e VIRTUAL_HOST=angular-starter.your-domain.com --name angular-starter angular-starter &
+#    docker run -e VIRTUAL_HOST=angular-map-d3.your-domain.com --name angular-map-d3 angular-map-d3 &
 
 FROM nginx:1.13.0-alpine
 
@@ -32,7 +32,7 @@ RUN cd /tmp/npm_inst &&\
 # build and publish application
 ADD . /tmp/app
 RUN cd /tmp/app &&\
-    npm run build:aot &&\
+    npm run build &&\
     mv ./dist/* /usr/share/nginx/html/
 
 # clean
