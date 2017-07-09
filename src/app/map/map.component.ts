@@ -96,6 +96,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       citiesOverlay.addTo(map);
       if (bounds.length > 0) {
         map.fitBounds(bounds, { maxZoom: 8 });
+        if (bounds.length === 1) {
+          console.log(`only one`);
+          map.setView(bounds[0], 7);
+        }
       } else {
         map.setView(map.options.center, map.options.zoom);
       };
