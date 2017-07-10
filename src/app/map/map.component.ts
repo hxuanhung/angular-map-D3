@@ -82,7 +82,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
           return proj.latLngToLayerPoint([d.geometry.location.lat(), d.geometry.location.lng()]).y;
         })
         .attr("class", "place-label")
-        .attr("dy", "2.35em")
+        .attr("font-size", 15 / proj.scale)
+        .attr("dy", "0")
         .text(function (d) {
           return d.name;
         });
