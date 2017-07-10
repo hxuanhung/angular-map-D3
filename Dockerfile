@@ -10,10 +10,7 @@
 #    docker rmi -f $(docker images -f "dangling=true" -q)
 #
 #    Run image (on localhost:8080):
-#    docker run --name angular-map-d3 -p 8080:80 angular-map-d3 &
-#
-#    Run image as virtual host (read more: https://github.com/jwilder/nginx-proxy):
-#    docker run -e VIRTUAL_HOST=angular-map-d3.your-domain.com --name angular-map-d3 angular-map-d3 &
+#    docker run --name angular-map-d3 -p 8080:80 hxuanhung/angular-map-d3 &
 
 FROM nginx:1.13.0-alpine
 
