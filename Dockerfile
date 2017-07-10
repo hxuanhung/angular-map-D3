@@ -1,10 +1,10 @@
 # Usage (given build times depend on machine):
 #
 #    Build SMALL image (no cache; ~20MB, time for build=rebuild = ~360s):
-#    docker build --squash="true" -t angular-map-d3 .
+#    docker build --squash="true" -t hxuanhung/angular-map-d3 .
 #
 #    Build FAST (rebuild) image (cache; >280MB, build time ~360s, rebuild time ~80s):
-#    docker build -t angular-map-d3 .
+#    docker build -t hxuanhung/angular-map-d3 .
 #
 #    Clean (remove intermidiet images):
 #    docker rmi -f $(docker images -f "dangling=true" -q)
@@ -30,6 +30,8 @@ RUN cd /tmp/npm_inst &&\
 ADD . /tmp/app
 RUN cd /tmp/app &&\
     npm run build &&\
+    mkdir -p dist/app/tools &&\
+    cp src/app/tools/D3SvgOverlay.js dist/app/tools/ &&\
     mv ./dist/* /usr/share/nginx/html/
 
 # clean
