@@ -34,7 +34,6 @@ export class HomeComponent implements OnInit {
     });
   }
   public getAddress(place: Object) {
-    console.log(`get Address here`, place);
     this.place = place;
     this.address = place['formatted_address'];
     let location = place['geometry']['location'];
@@ -43,12 +42,10 @@ export class HomeComponent implements OnInit {
   }
 
   public addPlace() {
-    console.log(`addPlace`, this.place);
     this.address = ``;
     this.store.dispatch(new addPlaceAction(this.place));
   }
   public removePlace(name: string) {
-    console.log(`removePlace`, name);
     this.store.dispatch(new removePlaceAction(name));
   }
 }
